@@ -23,7 +23,7 @@ const { getReportsByRoleAndEmail } = require("./controllers/get.controllers");
 const User = require("./models/usermodel");
 const { generateFinalReport, generateReportCardPDF, previewReportCard, getFinalReport } = require("./controllers/finalReport");
 const app = express();
-const port = 3000;
+const port = 3003;
 app.use(bodyParser.json());
 
 
