@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const puppeteer = require("puppeteer");
 const fse = require('fs-extra');
-const path = require('path');
+
 const Docker = require('dockerode');
 
 const Class = require("../models/excelmodel");
@@ -604,7 +604,7 @@ const getContainerStats = async () => {
   return stats;
 };
 const reportsFolderPath = path.join(__dirname, '../reports');
-const deleteAll =()=>{
+const deleteAll =async()=>{
   try {
     // Ensure the reports folder exists
     await fse.ensureDir(reportsFolderPath);
