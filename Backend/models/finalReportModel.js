@@ -163,27 +163,28 @@ finalReportSchema.pre('save', async function (next) {
       "Total Rejected": { number: 0, percentage: 0 },
     };
     let totalKR20 = 0;
-    // Calculate totals
-    classes.forEach(classDoc => {
-      const questionAnalysisData = classDoc.questionAnalysisData;
-      for (const key in counters) {
-        if (questionAnalysisData[key]) {
-          counters[key].number += questionAnalysisData[key].number || 0;
-          counters[key].percentage += questionAnalysisData[key].percentage || 0;
-        }
-      }
-      totalKR20 += classDoc.kr20 || 0;
-    });
-    const totalEntries = classes.length;
-    for (const key in counters) {
-      if (totalEntries > 0) {
-        counters[key].number /= totalEntries;
-        counters[key].percentage /= totalEntries;
-      }
+// Calculate totals
+classes.forEach(classDoc => {
+  const questionAnalysisData = classDoc.questionAnalysisData;
+  for (const key in counters) {
+    if (questionAnalysisData[key]) {
+      counters[key].number += questionAnalysisData[key].number || 0;
+      counters[key].percentage += questionAnalysisData[key].percentage || 0;
     }
+  }
+  totalKR20 += classDoc.kr20 || 0;
+});
+const totalEntries = classes.length;
+for (const key in counters) {
+  if (totalEntries > 0) {
+    counters[key].number = (counters[key].number / totalEntries).toFixed(2);
+    counters[key].percentage = (counters[key].percentage / totalEntries).toFixed(2);
+  }
+}
+const kr20Average = totalEntries > 0 ? (totalKR20 / totalEntries).toFixed(2) : 0;
 
-    // Update levelAverage
-    level.levelAverage = counters;
+// Update levelAverage
+level.levelAverage = { ...counters, kr20Average };
   }
 
   next();
@@ -213,7 +214,7 @@ finalReportSchema.pre('save', async function (next) {
 
       let totalKR20 = 0;
 
-      // Calculate totals
+
       classes.forEach(classDoc => {
         const questionAnalysisData = classDoc.questionAnalysisData;
         for (const key in counters) {
@@ -224,17 +225,18 @@ finalReportSchema.pre('save', async function (next) {
         }
         totalKR20 += classDoc.kr20 || 0;
       });
-
+      
       const totalEntries = classes.length;
       for (const key in counters) {
         if (totalEntries > 0) {
-          counters[key].number /= totalEntries;
-          counters[key].percentage /= totalEntries;
+          counters[key].number = (counters[key].number / totalEntries).toFixed(2);
+          counters[key].percentage = (counters[key].percentage / totalEntries).toFixed(2);
         }
       }
-
+      
       // Calculate kr20Average
-      const kr20Average = totalEntries > 0 ? totalKR20 / totalEntries : 0;
+      const kr20Average = totalEntries > 0 ? (totalKR20 / totalEntries).toFixed(2) : 0;
+      
 
       // Update average field
       entry[averageField] = { ...counters, kr20Average };
